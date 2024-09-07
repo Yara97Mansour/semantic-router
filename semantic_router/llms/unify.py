@@ -5,7 +5,7 @@ from semantic_router.llms import BaseLLM
 from semantic_router.schema import Message
 from semantic_router.utils.defaults import EncoderDefault
 
-from unify.exceptions import UnifyError
+# from unify.exceptions import UnifyError
 from unify.clients import Unify, AsyncUnify
 
 
@@ -46,7 +46,7 @@ class UnifyLLM(BaseLLM):
 
     def _call(self, messages: List[Message]) -> str:
         if self.client is None:
-            raise UnifyError("Unify client is not initialized.")
+            raise ValueError("Unify client is not initialized.")
         try:
             output = self.client.generate(
                 messages=[m.to_openai() for m in messages],
@@ -56,15 +56,15 @@ class UnifyLLM(BaseLLM):
             )
 
             if not output:
-                raise UnifyError("No output generated")
+                raise ValueError("No output generated")
             return output
 
         except Exception as e:
-            raise UnifyError(f"Unify API call failed. Error: {e}") from e
+            raise ValueError(f"Unify API call failed. Error: {e}") from e
 
     async def _acall(self, messages: List[Message]) -> str:
         if self.async_client is None:
-            raise UnifyError("Unify async_client is not initialized.")
+            raise ValueError("Unify async_client is not initialized.")
         try:
             output = await self.async_client.generate(
                 messages=[m.to_openai() for m in messages],
@@ -74,8 +74,8 @@ class UnifyLLM(BaseLLM):
             )
 
             if not output:
-                raise UnifyError("No output generated")
+                raise ValueError("No output generated")
             return output
 
         except Exception as e:
-            raise UnifyError(f"Unify API call failed. Error: {e}") from e
+            raise ValueError(f"Unify API call failed. Error: {e}") from e
